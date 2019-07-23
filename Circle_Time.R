@@ -35,11 +35,11 @@ GUD <- data.frame(points, time)
 
 #Evaluation time for various numbers of sampled points
 for (i in 1:5){
-sample <- circleUnif(10*(2^i),r=1)
+sample <- circleUnif(50*i,r=1)
 
-ripser$points[i] <- 10*(2^i)
-Dion$points[i] <- 10*(2^i)
-GUD$points[i] <- 10*(2^i)
+ripser$points[i] <- 50*i
+Dion$points[i] <- 50*i
+GUD$points[i] <- 50*i
 
 mark.ripser <- mark(calculate_homology(sample,dim=1), min_iterations = 5)
 mark.Dion <- mark(ripsDiag(X = sample, maxdimension = 1, maxscale = 1.75, library = "Dionysus", printProgress = FALSE), min_iterations = 5)

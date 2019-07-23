@@ -12,7 +12,7 @@ library(ggplot2)
 #Verify that the two packages produce the same results
 #When running the benchmarking section, use this section to match parameters.
 ####################
-test_Hsphere <- sphereUnif(75 ,3 ,r=1)
+test_Hsphere <- sphereUnif(100, 3, r=1)
 
 #TDAstats package (ripser)
 test.phom.TDAstat <- calculate_homology(test_Hsphere,dim=3)
@@ -35,14 +35,14 @@ GUD <- data.frame(points, time)
 
 #Evaluation speed for various numbers of sampled points
 for (i in 1:5){
-  sample <- sphereUnif(10*(2^i), 6, r=1)
+  sample <- sphereUnif(50*i, 4, r=1)
   
-  ripser$points[i] <- 10*(2^i)
-  #Dion$points[i] <- 10*(2^i)
-  GUD$points[i] <- 10*(2^i)
+  ripser$points[i] <- 50*i
+  #Dion$points[i] <- 25*i
+  GUD$points[i] <- 50*i
   
   mark.ripser <- mark(calculate_homology(sample,dim=1))
-  #mark.Dion <- mark(ripsDiag(X = sample, maxdimension = 2, maxscale = 1.75, library = "Dionysus", printProgress = FALSE))
+  #mark.Dion <- mark(ripsDiag(X = sample, maxdimension = 4, maxscale = 1.75, library = "Dionysus", printProgress = FALSE))
   mark.GUD <- mark(ripsDiag(X = sample, maxdimension = 1, maxscale = 1.75, library = "GUDHI", printProgress = FALSE))
   
   ripser$time[i] <- mark.ripser$median
@@ -68,4 +68,4 @@ Sphere.benchmarks <- rbind(ripser, GUD)
 
 #Plotting
 ggplot(Sphere.benchmarks, aes(points, time)) + geom_point(aes(x = points, y = time, shape = Algorithm, color = Algorithm)) +
-  labs(title="3-Sphere Sample Point Cloud", y="Evaluation Time", x="Number of Points") + theme_bw()
+  labs(title="3-Sphere Sample (1-Dim)", y="Evaluation Time", x="Number of Points") + theme_bw()

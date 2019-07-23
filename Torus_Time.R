@@ -35,11 +35,11 @@ GUD <- data.frame(points, time)
 
 #Evaluating speed and memory for various numbers of sampled points
 for (i in 1:5){
-  sample <- torusUnif(10*(2^i), 1, 4)
+  sample <- torusUnif(50*i, 1, 3)
   
-  ripser$points[i] <- 10*(2^i)
-  #Dion$points[i] <- 10*(2^i)
-  GUD$points[i] <- 10*(2^i)
+  ripser$points[i] <- 50*i
+  #Dion$points[i] <- 50*i
+  GUD$points[i] <- 50*i
   
   mark.ripser <- mark(calculate_homology(sample,dim=2))
   #mark.Dion <- mark(ripsDiag(X = sample, maxdimension = 2, maxscale = 1.75, library = "Dionysus", printProgress = FALSE))
@@ -69,3 +69,4 @@ Sphere.benchmarks <- rbind(ripser, GUD)
 #Plotting
 ggplot(Sphere.benchmarks, aes(points, time)) + geom_point(aes(x = points, y = time, shape = Algorithm, color = Algorithm)) +
   labs(title="Torus Sample Point Cloud", y="Evaluation Time", x="Number of Points") + theme_bw()
+

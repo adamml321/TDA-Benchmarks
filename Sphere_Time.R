@@ -36,36 +36,36 @@ GUD <- data.frame(points, time)
 
 #Evaluating speed and memory for various numbers of sampled points
 for (i in 1:5){
-  sample <- sphereUnif(10*(2^i), 2, r=1)
+  sample <- sphereUnif(50*i, 2, r=1)
   
-  ripser$points[i] <- 10*(2^i)
-  #Dion$points[i] <- 10*(2^i)
-  GUD$points[i] <- 10*(2^i)
+  ripser$points[i] <- 50*i
+  Dion$points[i] <- 50*i
+  GUD$points[i] <- 50*i
   
   mark.ripser <- mark(calculate_homology(sample,dim=2))
-  #mark.Dion <- mark(ripsDiag(X = sample, maxdimension = 2, maxscale = 1.75, library = "Dionysus", printProgress = FALSE))
+  mark.Dion <- mark(ripsDiag(X = sample, maxdimension = 2, maxscale = 1.75, library = "Dionysus", printProgress = FALSE))
   mark.GUD <- mark(ripsDiag(X = sample, maxdimension = 2, maxscale = 1.75, library = "GUDHI", printProgress = FALSE))
   
   ripser$time[i] <- mark.ripser$median
   
-  #Dion$time[i] <- mark.Dion$median
+  Dion$time[i] <- mark.Dion$median
   
   GUD$time[i] <- mark.GUD$median
 }
 
 #Reformatting data in units of memory/time
 ripser$time <- as_bench_time(ripser$time)
-ripser$Algorithm <- "ripser"
+ripser$Algorithm <- "Ripser"
 
 GUD$time <- as_bench_time(GUD$time)
 GUD$Algorithm <- "GUDHI"
 
-#Dion$time <- as_bench_time(Dion$time)
-#Dion$Algorithm <- "Dionysus"
+Dion$time <- as_bench_time(Dion$time)
+Dion$Algorithm <- "Dionysus"
 
 
 #Everything into one data frame
-Sphere.benchmarks <- rbind(ripser, GUD)
+Sphere.benchmarks <- rbind(ripser, GUD, Dion)
 
 #Plotting
 ggplot(Sphere.benchmarks, aes(points, time)) + geom_point(aes(x = points, y = time, shape = Algorithm, color = Algorithm)) +
