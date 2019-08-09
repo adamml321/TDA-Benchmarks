@@ -6,3 +6,5 @@ output: html_document
 ---
 
 The `Sphere_Profile.R` file requires the `jointprof` package to interface R and C++. It can be found at https://github.com/r-prof/jointprof. This package currently only works on OS X and Ubuntu, and the github page provides instructions for how to install the other required system dependencies.
+
+The code is copy/pasted from the jointprof page with the TDA code inserted in the section labeled "Code to be Profiled". The package provides a way to look line-by-line at evaluation times. 
