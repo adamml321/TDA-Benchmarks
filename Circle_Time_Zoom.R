@@ -7,6 +7,7 @@ library(microbenchmark)
 library(bench)
 library(rgl)
 library(ggplot2)
+library(profvis)
 
 ####################
 #Verify that the two packages produce the same results
@@ -73,4 +74,3 @@ Circle.benchmarks <- rbind(ripser, GUD)
 #Plotting
 ggplot(Circle.benchmarks, aes(points, time)) + geom_point(aes(x = points, y = time, shape = Algorithm, color = Algorithm)) +
   labs(title="Circular Sample Point Cloud", y="Evaluation Time", x="Number of Points") + theme_bw()
-

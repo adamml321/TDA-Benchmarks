@@ -12,7 +12,7 @@ library(ggplot2)
 #Verify that the two packages produce the same results
 #When running the benchmarking section, use this section to match parameters.
 ####################
-test_circle <- circleUnif(50,r=1)
+test_circle <- circleUnif(100,r=1)
 
 #TDAstats package (ripser)
 test.phom.TDAstat <- calculate_homology(test_circle,dim=1)
@@ -21,6 +21,10 @@ plot_barcode(test.phom.TDAstat)
 #TDA package (GUDHI)
 test.phom.gud <- ripsDiag(X = test_circle, maxdimension = 1, maxscale = 1.75, library = "GUDHI", printProgress = FALSE)
 plot(test.phom.gud[["diagram"]],barcode=TRUE)
+
+#TDA package (Dionysus)
+test.phom.dion <- ripsDiag(X = test_circle, maxdimension = 1, maxscale = 1.75, library = "Dionysus", printProgress = FALSE)
+plot(test.phom.dion[["diagram"]],barcode=TRUE)
 
 
 #Setting up variables for Benchmarking
@@ -54,7 +58,7 @@ GUD$time[i] <- mark.GUD$median
 
 #Reformatting data in units of time
 ripser$time <- as_bench_time(ripser$time)
-ripser$Algorithm <- "ripser"
+ripser$Algorithm <- "Ripser"
 
 GUD$time <- as_bench_time(GUD$time)
 GUD$Algorithm <- "GUD"
