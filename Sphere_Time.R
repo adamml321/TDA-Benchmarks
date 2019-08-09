@@ -1,5 +1,5 @@
-#Generate a plot comparing memory and evaluation speed between TDA (GUDHI) and TDAstats (ripser)
-#This will look at samples from random and sphere-sampled data with various numbers of points sampled
+#Benchmark and plot evaluation speed between TDA (GUDHI, Dionysus) and TDAstats (ripser) packages
+#This will look at data from a point cloud sampled from the unit sphere with various numbers of points sampled
 
 library(TDA)
 library(TDAstats)
@@ -9,7 +9,8 @@ library(rgl)
 library(ggplot2)
 
 ####################
-#2-Sphere
+#Verify that the two packages produce the same results
+#When running the benchmarking section, use this section to match parameters.
 ####################
 test_sphere <- sphereUnif(50 ,2 ,r=1)
 plot3d(test_sphere)
@@ -22,62 +23,50 @@ plot_barcode(test.phom.TDAstat)
 test.phom.gud <- ripsDiag(X = test_sphere, maxdimension = 2, maxscale = 1.75, library = "GUDHI", printProgress = FALSE)
 plot(test.phom.gud[["diagram"]],barcode=TRUE)
 
-#Making the Speed and Memory Plots
 
-#Setting up variables
+#Setting up variables for Benchmarking
 ###################
 time <- numeric(5)
-memory <- numeric(5)
 points <- numeric(5)
 
-ripser <- data.frame(points, time, memory)
-#Dion <- data.frame(points, time, memory)
-GUD <- data.frame(points, time, memory)
+ripser <- data.frame(points, time)
+#Dion <- data.frame(points, time)
+GUD <- data.frame(points, time)
 ###################
 
 #Evaluating speed and memory for various numbers of sampled points
 for (i in 1:5){
-  sample <- sphereUnif(10*(2^i), 2, r=1)
+  sample <- sphereUnif(50*i, 2, r=1)
   
-  ripser$points[i] <- 10*(2^i)
-  #Dion$points[i] <- 10*(2^i)
-  GUD$points[i] <- 10*(2^i)
+  ripser$points[i] <- 50*i
+  Dion$points[i] <- 50*i
+  GUD$points[i] <- 50*i
   
   mark.ripser <- mark(calculate_homology(sample,dim=2))
-  #mark.Dion <- mark(ripsDiag(X = sample, maxdimension = 2, maxscale = 1.75, library = "Dionysus", printProgress = FALSE))
+  mark.Dion <- mark(ripsDiag(X = sample, maxdimension = 2, maxscale = 1.75, library = "Dionysus", printProgress = FALSE))
   mark.GUD <- mark(ripsDiag(X = sample, maxdimension = 2, maxscale = 1.75, library = "GUDHI", printProgress = FALSE))
   
   ripser$time[i] <- mark.ripser$median
-  ripser$memory[i] <- mark.ripser$mem_alloc
   
-  #Dion$time[i] <- mark.Dion$median
-  #Dion$memory[i] <- mark.Dion$mem_alloc
+  Dion$time[i] <- mark.Dion$median
   
   GUD$time[i] <- mark.GUD$median
-  GUD$memory[i] <- mark.GUD$mem_alloc
 }
 
 #Reformatting data in units of memory/time
 ripser$time <- as_bench_time(ripser$time)
-ripser$memory <- as_bench_bytes(ripser$memory)
-ripser$Algorithm <- "ripser"
+ripser$Algorithm <- "Ripser"
 
 GUD$time <- as_bench_time(GUD$time)
-GUD$memory <- as_bench_bytes(GUD$memory)
 GUD$Algorithm <- "GUDHI"
 
-#Dion$time <- as_bench_time(Dion$time)
-#Dion$memory <- as_bench_bytes(Dion$memory)
-#Dion$Algorithm <- "Dionysus"
+Dion$time <- as_bench_time(Dion$time)
+Dion$Algorithm <- "Dionysus"
 
 
 #Everything into one data frame
-Sphere.benchmarks <- rbind(ripser, GUD)
+Sphere.benchmarks <- rbind(ripser, GUD, Dion)
 
 #Plotting
 ggplot(Sphere.benchmarks, aes(points, time)) + geom_point(aes(x = points, y = time, shape = Algorithm, color = Algorithm)) +
   labs(title="2-Sphere Sample Point Cloud", y="Evaluation Time", x="Number of Points") + theme_bw()
-
-ggplot(Sphere.benchmarks, aes(points, memory)) + geom_point(aes(x = points, y = memory, shape = Algorithm, color = Algorithm)) +
-  labs(title="2-Sphere Sample Point Cloud", y="Memory Allocation", x="Number of Points") + theme_bw()
-
