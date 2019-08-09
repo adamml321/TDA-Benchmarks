@@ -21,11 +21,9 @@ target_file <- "sph_ripserprof.out"
 start_profiler(target_file)
 
 ## code to be profiled
-#test.phom.TDAstat <- calculate_homology(test_sphere,dim=2)
-#plot_barcode(test.phom.TDAstat)
+test.phom.TDAstat <- calculate_homology(test_sphere,dim=2)
+plot_barcode(test.phom.TDAstat)
 
-test.phom.gud <- ripsDiag(X = test_sphere, maxdimension = 2, maxscale = 1.75, library = "GUDHI", printProgress = FALSE)
-plot(test.phom.gud[["diagram"]],barcode=TRUE)
 
 stop_profiler()
 
