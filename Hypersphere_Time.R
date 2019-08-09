@@ -35,11 +35,11 @@ GUD <- data.frame(points, time)
 
 #Evaluation speed for various numbers of sampled points
 for (i in 1:5){
-  sample <- sphereUnif(50*i, 4, r=1)
+  sample <- sphereUnif(25*i, 6, r=1)
   
-  ripser$points[i] <- 50*i
+  ripser$points[i] <- 25*i
   #Dion$points[i] <- 25*i
-  GUD$points[i] <- 50*i
+  GUD$points[i] <- 25*i
   
   mark.ripser <- mark(calculate_homology(sample,dim=1))
   #mark.Dion <- mark(ripsDiag(X = sample, maxdimension = 4, maxscale = 1.75, library = "Dionysus", printProgress = FALSE))
@@ -54,7 +54,7 @@ for (i in 1:5){
 
 #Reformatting data in units of time
 ripser$time <- as_bench_time(ripser$time)
-ripser$Algorithm <- "ripser"
+ripser$Algorithm <- "Ripser"
 
 GUD$time <- as_bench_time(GUD$time)
 GUD$Algorithm <- "GUDHI"
@@ -69,3 +69,4 @@ Sphere.benchmarks <- rbind(ripser, GUD)
 #Plotting
 ggplot(Sphere.benchmarks, aes(points, time)) + geom_point(aes(x = points, y = time, shape = Algorithm, color = Algorithm)) +
   labs(title="3-Sphere Sample (1-Dim)", y="Evaluation Time", x="Number of Points") + theme_bw()
+

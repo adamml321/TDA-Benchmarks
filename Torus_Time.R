@@ -12,7 +12,7 @@ library(ggplot2)
 #Verify that the two packages produce the same results
 #When running the benchmarking section, use this section to match parameters.
 ####################
-test_torus <- torusUnif(100, 1, 4)
+test_torus <- torusUnif(100, 1, 5)
 plot3d(test_torus)
 
 #TDAstats package (ripser)
@@ -20,7 +20,7 @@ test.phom.TDAstat <- calculate_homology(test_torus,dim=2)
 plot_barcode(test.phom.TDAstat)
 
 #TDA package (GUDHI)
-test.phom.gud <- ripsDiag(X = test_torus, maxdimension = 2, maxscale = 6, library = "GUDHI", printProgress = FALSE)
+test.phom.gud <- ripsDiag(X = test_torus, maxdimension = 2, maxscale = 8, library = "GUDHI", printProgress = FALSE)
 plot(test.phom.gud[["diagram"]],barcode=TRUE)
 
 #Setting up variables for benchmarking
@@ -35,7 +35,7 @@ GUD <- data.frame(points, time)
 
 #Evaluating speed and memory for various numbers of sampled points
 for (i in 1:5){
-  sample <- torusUnif(50*i, 1, 3)
+  sample <- torusUnif(25*i, 1, 5)
   
   ripser$points[i] <- 50*i
   #Dion$points[i] <- 50*i
@@ -43,7 +43,7 @@ for (i in 1:5){
   
   mark.ripser <- mark(calculate_homology(sample,dim=2))
   #mark.Dion <- mark(ripsDiag(X = sample, maxdimension = 2, maxscale = 1.75, library = "Dionysus", printProgress = FALSE))
-  mark.GUD <- mark(ripsDiag(X = sample, maxdimension = 2, maxscale = 6, library = "GUDHI", printProgress = FALSE))
+  mark.GUD <- mark(ripsDiag(X = sample, maxdimension = 2, maxscale = 8, library = "GUDHI", printProgress = FALSE))
   
   ripser$time[i] <- mark.ripser$median
   
@@ -54,7 +54,7 @@ for (i in 1:5){
 
 #Reformatting data in units of memory/time
 ripser$time <- as_bench_time(ripser$time)
-ripser$Algorithm <- "ripser"
+ripser$Algorithm <- "Ripser"
 
 GUD$time <- as_bench_time(GUD$time)
 GUD$Algorithm <- "GUDHI"

@@ -11,41 +11,36 @@ library(ggplot2)
 #Verify that the two packages produce the same results
 #When running the benchmarking section, use this section to match parameters.
 ####################
-test_sphere <- sphereUnif(190 ,2 ,r=1)
+test_sphere <- sphereUnif(10000 ,4 ,r=1)
 plot3d(test_sphere)
 
 #TDAstats package (ripser)
-test.phom.TDAstat <- calculate_homology(test_sphere,dim=2)
+test.phom.TDAstat <- calculate_homology(test_sphere,dim=4)
 plot_barcode(test.phom.TDAstat)
 
 #TDA package (GUDHI)
 test.phom.gud <- ripsDiag(X = test_sphere, maxdimension = 2, maxscale = 1.75, library = "GUDHI", printProgress = FALSE)
 plot(test.phom.gud[["diagram"]],barcode=TRUE)
 
-#TDA package (Dionysus)
-test.phom.gud <- ripsDiag(X = test_sphere, maxdimension = 2, maxscale = 1.75, library = "GUDHI", printProgress = FALSE)
-plot(test.phom.gud[["diagram"]],barcode=TRUE)
-
 
 #Setting up variables for Benchmarking
 ###################
-time <- numeric(6)
-points <- numeric(6)
+time <- numeric(4)
+dimensions <- integer(4)
 
-ripser <- data.frame(points, time)
+ripser <- data.frame(dimensions, time)
 #Dion <- data.frame(points, time)
 #GUD <- data.frame(points, time)
 ###################
 
-#Evaluating speed and memory for various numbers of sampled points
-for (i in 1:6){
-  sample <- sphereUnif(10*(2^i), 2, r=1)
-  
-  ripser$points[i] <- 10*(2^i)
+#Evaluating speed and memory for various dimensions of 
+sample <- sphereUnif(100, 5, r=1)
+for (i in 1:4){
+  ripser$dimensions[i] <- i-1
   #Dion$points[i] <- 48*i
   #GUD$points[i] <- 48*i
   
-  mark.ripser <- mark(calculate_homology(sample,dim=2))
+  mark.ripser <- mark(calculate_homology(sample,dim=i-1))
   #mark.Dion <- mark(ripsDiag(X = sample, maxdimension = 2, maxscale = 1.75, library = "Dionysus", printProgress = FALSE))
   #mark.GUD <- mark(ripsDiag(X = sample, maxdimension = 2, maxscale = 1.75, library = "GUDHI", printProgress = FALSE))
   
@@ -71,6 +66,6 @@ ripser$Algorithm <- "Ripser"
 Sphere.benchmarks <- rbind(ripser)
 
 #Plotting
-ggplot(Sphere.benchmarks, aes(points, time)) + geom_point(aes(x = points, y = time, shape = Algorithm, color = Algorithm)) +
-  labs(title="2-Sphere Sample Point Cloud", y="Evaluation Time", x="Number of Points") + theme_bw()
+ggplot(Sphere.benchmarks, aes(dimensions, time)) + geom_point(aes(x = dimensions, y = time, shape = Algorithm, color = Algorithm)) +
+  labs(title="2-Sphere Sample Point Cloud", y="Evaluation Time", x="Dimensions") + theme_bw()
 
